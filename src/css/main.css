@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+form {
+  margin: 40px 0px;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-submit {
+  border: none;
+  border-radius: 6px;
+  background-color: #008cba;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#floors-container {
+  margin: 40px 0px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.floor {
+  padding-bottom: 16px;
+  height: 150px;
+  border-bottom: 2px solid black;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.up-btn {
+  border: none;
+  border-radius: 6px;
+  background-color: green;
+  color: white;
+  padding: 8px;
+  cursor: pointer;
+  width: 55px;
+}
+
+.down-btn {
+  border: none;
+  border-radius: 6px;
+  background-color: yellow;
+  padding: 8px;
+  cursor: pointer;
+  width: 55px;
+}
+
+.lift {
+  height: 100px;
+  width: 50px;
+  position: relative;
+  background-color: skyblue;
+}
+
+.move-up {
+  animation-name: moveUp;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes moveUp {
+  from {
+    bottom: 0px;
+  }
+  to {
+    bottom: 150px;
+  }
+}
