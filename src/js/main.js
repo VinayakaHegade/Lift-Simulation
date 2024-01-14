@@ -5,7 +5,6 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   const numberOfFloors = event.target[0].value;
   const numberOfLifts = event.target[1].value;
-  console.log(numberOfFloors, numberOfLifts);
   generateFloors(numberOfFloors);
   generateLifts(numberOfLifts);
 
@@ -43,11 +42,12 @@ function generateFloors(numberOfFloors) {
 function generateLifts(numberOfLifts) {
   const floors = document.getElementsByClassName("floor");
   const firstFloor = floors[floors.length - 1];
-  for (let i = 1; i <= numberOfLifts; i++) {
+  for (let i = numberOfLifts; i > 0; i--) {
     //create lift
     const lift = document.createElement("div");
     lift.classList.add("lift");
     lift.setAttribute("data-lift-number", i);
+    lift.setAttribute("data-moving-state", false);
 
     // Add doors inside lift
     const leftDoor = document.createElement("div");
@@ -62,14 +62,39 @@ function generateLifts(numberOfLifts) {
       .insertAdjacentElement("afterend", lift);
   }
 
+  // Add event listeners to buttons
   const upButtons = document.getElementsByClassName("up-btn");
-  const downButtons = document.getElementsByClassName("downn-btn");
-  const lifts = document.getElementsByClassName("lift");
+  const downButtons = document.getElementsByClassName("down-btn");
   for (let i = 0; i < upButtons.length; i++) {
-    upButtons[i].addEventListener("click", () => {
-      // lifts[i].classList.add("move-up");
-    });
+    upButtons[i].addEventListener("click", moveLift);
+  }
+  for (let i = 0; i < downButtons.length; i++) {
+    downButtons[i].addEventListener("click", moveLift);
   }
 }
 
-function moveLift() {}
+const lifts = document.getElementsByClassName("lift");
+
+function moveLift(event) {
+  let lift;
+  for (let i = 0; i < lifts.length; i++) {
+    console.log(lifts[i].dataset.liftNumber);
+    console.log(lifts[i].dataset.movingState);
+    if (lifts[i].dataset.movingState === "false") {
+      lift = lifts[i];
+      lifts[i].dataset.movingState = "true";
+      break;
+    }
+  }
+  const targetFloor = event.target.dataset.btnFloor; // or you can use  attributes["data-btn-floor"].value
+  const currentYPosition = lift.style.translate.split(" ").pop();
+  const currentFloor = currentYPosition.slice(1, -2) / 150 + 1;
+  console.log(targetFloor, currentFloor);
+  const floorsToMove = Math.abs(targetFloor - currentFloor);
+  const transitionTime = 2 * floorsToMove;
+  lift.style.transition = transitionTime + "s";
+  lift.style.translate = `0px ${(targetFloor - 1) * -150}px`;
+  setTimeout(() => {
+    lift.dataset.movingState = "false";
+  }, transitionTime * 1000);
+}
