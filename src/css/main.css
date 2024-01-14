@@ -9,6 +9,10 @@ body {
   place-items: center;
 }
 
+main {
+  width: 100%;
+}
+
 form {
   margin: 40px 0px;
   display: flex;
@@ -34,8 +38,8 @@ form {
 
 #floors-container {
   margin: 40px 0px;
-  width: 100%;
-  max-width: 400px;
+  width: fit-content;
+  margin: 0 auto;
   position: relative;
 }
 
@@ -75,10 +79,22 @@ form {
 }
 
 .lift {
-  height: 100px;
-  width: 50px;
+  display: flex;
   position: relative;
+}
+
+.left-door {
+  height: 100px;
+  width: 25px;
   background-color: skyblue;
+  border-right: 1px solid black;
+}
+
+.right-door {
+  height: 100px;
+  width: 25px;
+  background-color: skyblue;
+  border-left: 1px solid black;
 }
 
 .move-up {
