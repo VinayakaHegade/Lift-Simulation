@@ -1,5 +1,13 @@
 const form = document.getElementById("form");
 const floorsContainer = document.getElementById("floors-container");
+const maxLiftsText = document.getElementById("max-lifts");
+const liftInput = document.getElementById("lift-input");
+
+if (window.innerWidth < 830) {
+  const maxLifts = parseInt((window.innerWidth - 130) / 70);
+  maxLiftsText.innerText = maxLifts;
+  liftInput.max = maxLifts;
+}
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -79,6 +87,7 @@ function generateLifts(numberOfLifts) {
   }
 }
 
+// get all the lifts
 const lifts = document.getElementsByClassName("lift");
 
 let processQueue = [];
@@ -116,16 +125,23 @@ function moveLift(targetFloor) {
       // move the lift
       lifts[i].style.transition = transitionTime + "s";
       lifts[i].style.translate = `0px ${(targetFloor - 1) * -150}px`;
+
+      // remove the process
       processQueue.shift();
+
+      // wait till it moves(translates) in y direction and stops
       setTimeout(() => {
         leftDoor.classList.add("open-door");
         rightDoor.classList.add("open-door");
+
+        // once movement stops start door animation
         setTimeout(() => {
           leftDoor.classList.remove("open-door");
           rightDoor.classList.remove("open-door");
           lifts[i].dataset.movingState = "false";
           runProcessQueue();
         }, 5000);
+        
       }, transitionTime * 1000);
       break;
     }

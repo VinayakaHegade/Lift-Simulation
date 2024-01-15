@@ -5,8 +5,11 @@
 }
 
 body {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
 }
 
 main {
@@ -19,6 +22,14 @@ form {
   gap: 16px;
   flex-direction: column;
   align-items: center;
+}
+
+#instructions {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .input-group {
@@ -50,7 +61,7 @@ form {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
 }
 
 .button-group {
@@ -81,7 +92,7 @@ form {
 .lift {
   display: flex;
   position: relative;
-  width: 51px;
+  width: 50px;
   height: 102px;
   border: 1px solid black;
 }
