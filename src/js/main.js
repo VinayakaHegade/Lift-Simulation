@@ -66,35 +66,68 @@ function generateLifts(numberOfLifts) {
   const upButtons = document.getElementsByClassName("up-btn");
   const downButtons = document.getElementsByClassName("down-btn");
   for (let i = 0; i < upButtons.length; i++) {
-    upButtons[i].addEventListener("click", moveLift);
+    upButtons[i].addEventListener("click", (event) => {
+      const targetFloor = event.target.dataset.btnFloor; // or you can use  attributes["data-btn-floor"].value
+      addToProcessQueue(targetFloor);
+    });
   }
   for (let i = 0; i < downButtons.length; i++) {
-    downButtons[i].addEventListener("click", moveLift);
+    downButtons[i].addEventListener("click", (event) => {
+      const targetFloor = event.target.dataset.btnFloor; // or you can use  attributes["data-btn-floor"].value
+      addToProcessQueue(targetFloor);
+    });
   }
 }
 
 const lifts = document.getElementsByClassName("lift");
 
-function moveLift(event) {
-  let lift;
+let processQueue = [];
+
+function addToProcessQueue(targetFloor) {
+  processQueue.push(targetFloor);
+  if (processQueue.length <= lifts.length) {
+    runProcessQueue();
+  }
+}
+
+function runProcessQueue() {
+  if (processQueue.length > 0) {
+    moveLift(processQueue[0]);
+  }
+}
+
+function moveLift(targetFloor) {
+  //Check for free lift
   for (let i = 0; i < lifts.length; i++) {
-    console.log(lifts[i].dataset.liftNumber);
-    console.log(lifts[i].dataset.movingState);
     if (lifts[i].dataset.movingState === "false") {
-      lift = lifts[i];
       lifts[i].dataset.movingState = "true";
+
+      const leftDoor = lifts[i].getElementsByClassName("left-door")[0];
+      const rightDoor = lifts[i].getElementsByClassName("right-door")[0];
+
+      // get current floor of the first free lift we got from for loop
+      const currentYPosition = lifts[i].style.translate.split(" ").pop();
+      const currentFloor = currentYPosition.slice(1, -2) / 150 + 1;
+
+      // calculate floors to move and transition time
+      const floorsToMove = Math.abs(targetFloor - currentFloor);
+      const transitionTime = 2 * floorsToMove;
+
+      // move the lift
+      lifts[i].style.transition = transitionTime + "s";
+      lifts[i].style.translate = `0px ${(targetFloor - 1) * -150}px`;
+      processQueue.shift();
+      setTimeout(() => {
+        leftDoor.classList.add("open-door");
+        rightDoor.classList.add("open-door");
+        setTimeout(() => {
+          leftDoor.classList.remove("open-door");
+          rightDoor.classList.remove("open-door");
+          lifts[i].dataset.movingState = "false";
+          runProcessQueue();
+        }, 5000);
+      }, transitionTime * 1000);
       break;
     }
   }
-  const targetFloor = event.target.dataset.btnFloor; // or you can use  attributes["data-btn-floor"].value
-  const currentYPosition = lift.style.translate.split(" ").pop();
-  const currentFloor = currentYPosition.slice(1, -2) / 150 + 1;
-  console.log(targetFloor, currentFloor);
-  const floorsToMove = Math.abs(targetFloor - currentFloor);
-  const transitionTime = 2 * floorsToMove;
-  lift.style.transition = transitionTime + "s";
-  lift.style.translate = `0px ${(targetFloor - 1) * -150}px`;
-  setTimeout(() => {
-    lift.dataset.movingState = "false";
-  }, transitionTime * 1000);
 }

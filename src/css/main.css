@@ -81,9 +81,14 @@ form {
 .lift {
   display: flex;
   position: relative;
+  width: 51px;
+  height: 102px;
+  border: 1px solid black;
 }
 
 .left-door {
+  postion: absolute;
+  left: 0;
   height: 100px;
   width: 25px;
   background-color: skyblue;
@@ -91,23 +96,29 @@ form {
 }
 
 .right-door {
+  position: absolute;
+  right: 0;
   height: 100px;
   width: 25px;
   background-color: skyblue;
-  border-left: 1px solid black;
+  border-right: 1px solid black;
+  transform: rotate(180deg);
 }
 
-.move-up {
-  animation-name: moveUp;
-  animation-duration: 2s;
+.open-door {
+  animation-name: openDoor;
+  animation-duration: 5s;
   animation-fill-mode: forwards;
 }
 
-@keyframes moveUp {
-  from {
-    bottom: 0px;
+@keyframes openDoor {
+  0% {
+    width: 25px;
   }
-  to {
-    bottom: 150px;
+  50% {
+    width: 0px;
+  }
+  100% {
+    width: 25px;
   }
 }
