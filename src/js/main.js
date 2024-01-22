@@ -101,49 +101,56 @@ function addToProcessQueue(targetFloor) {
 
 function runProcessQueue() {
   if (processQueue.length > 0) {
-    moveLift(processQueue[0]);
+    findNearestLift(processQueue[0]);
   }
 }
 
-function moveLift(targetFloor) {
+function findNearestLift(targetFloor) {
+  let freeLiftCurrentFloors = [];
   //Check for free lift
   for (let i = 0; i < lifts.length; i++) {
     if (lifts[i].dataset.movingState === "false") {
-      lifts[i].dataset.movingState = "true";
-
-      const leftDoor = lifts[i].getElementsByClassName("left-door")[0];
-      const rightDoor = lifts[i].getElementsByClassName("right-door")[0];
-
       // get current floor of the first free lift we got from for loop
       const currentYPosition = lifts[i].style.translate.split(" ").pop();
       const currentFloor = currentYPosition.slice(1, -2) / 150 + 1;
 
       // calculate floors to move and transition time
       const floorsToMove = Math.abs(targetFloor - currentFloor);
-      const transitionTime = 2 * floorsToMove;
-
-      // move the lift
-      lifts[i].style.transition = transitionTime + "s";
-      lifts[i].style.translate = `0px ${(targetFloor - 1) * -150}px`;
-
-      // remove the process
-      processQueue.shift();
-
-      // wait till it moves(translates) in y direction and stops
-      setTimeout(() => {
-        leftDoor.classList.add("open-door");
-        rightDoor.classList.add("open-door");
-
-        // once movement stops start door animation
-        setTimeout(() => {
-          leftDoor.classList.remove("open-door");
-          rightDoor.classList.remove("open-door");
-          lifts[i].dataset.movingState = "false";
-          runProcessQueue();
-        }, 5000);
-        
-      }, transitionTime * 1000);
-      break;
+      freeLiftCurrentFloors.push({ id: i, distance: floorsToMove });
     }
   }
+
+  freeLiftCurrentFloors.sort((a, b) => a.distance - b.distance);
+  if (freeLiftCurrentFloors.length > 0) {
+    const nearestLift = freeLiftCurrentFloors[0];
+    moveLift(nearestLift.id, nearestLift.distance, targetFloor);
+  }
+}
+
+function moveLift(i, floorsToMove, targetFloor) {
+  lifts[i].dataset.movingState = "true";
+  const transitionTime = 2 * floorsToMove;
+
+  const leftDoor = lifts[i].getElementsByClassName("left-door")[0];
+  const rightDoor = lifts[i].getElementsByClassName("right-door")[0];
+  // move the lift
+  lifts[i].style.transition = transitionTime + "s";
+  lifts[i].style.translate = `0px ${(targetFloor - 1) * -150}px`;
+
+  // remove the process
+  processQueue.shift();
+
+  // wait till it moves(translates) in y direction and stops
+  setTimeout(() => {
+    leftDoor.classList.add("open-door");
+    rightDoor.classList.add("open-door");
+
+    // once movement stops start door animation
+    setTimeout(() => {
+      leftDoor.classList.remove("open-door");
+      rightDoor.classList.remove("open-door");
+      lifts[i].dataset.movingState = "false";
+      runProcessQueue();
+    }, 5000);
+  }, transitionTime * 1000);
 }
