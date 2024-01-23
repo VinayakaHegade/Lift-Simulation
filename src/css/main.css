@@ -95,6 +95,7 @@ form {
   width: 50px;
   height: 102px;
   border: 1px solid black;
+  transition-timing-function: linear !important;
 }
 
 .left-door {
